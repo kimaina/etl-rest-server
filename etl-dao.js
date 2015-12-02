@@ -486,7 +486,7 @@ module.exports = function () {
                 groupBy:request.query.groupBy||'groupByLocation',
                 offset:request.query.startIndex,
                 limit: request.query.limit,
-                supplementColumns:"name as location, location_uuid"
+                supplementColumns:"name as location, location_uuid, t1.encounter_datetime, t1.location_id"
             };
             //build report
             reportFactory.singleReportToSql(requestParams, function (exprResult) {

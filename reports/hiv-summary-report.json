@@ -11,6 +11,10 @@
             {"name":"groupByLocation", "defaultValue":[
                 {"label":"location","expression":"location"}
             ]
+            },
+            {"name":"groupByMonth", "defaultValue":[
+                {"label":"encounter_datetime","expression":"MONTH(encounter_datetime)"}
+            ]
             }
         ],
         "filters": [
@@ -19,7 +23,8 @@
             {"expression":"t1.location_id in ?", "parameter":"location"}
         ],
         "groupClause":[
-            {"parameter":"groupByLocation"}
+            {"parameter":"groupByLocation"},
+            {"parameter":"groupByMonth"}
         ],
         "indicators": [
             {
