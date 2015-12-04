@@ -228,12 +228,37 @@ module.exports = function () {
             }
         },
         {
+         /**
+                endpoint  to  get  Reports
+                @todo Rename  to get-report-by-name,count by{patient/encounters},filter-params{location/starting date/ end date}
+                @todo ,groupby params{location/monthly}
+
+                **/
+
             method: 'GET',
             path: '/etl/hiv-summary-indicators',
             config: {
                 auth: 'simple',
                 handler: function (request, reply) {
-                    dao.getHivSummaryIndicators(request, reply);
+                //determine  report to  call the  right  name
+                     switch(request.query.report){
+                    case 'hiv-summary-report':{
+                     console.log("using  this  case>>>>>>>hiv-summary-report'")
+                      dao.getHivSummaryIndicators(request, reply);
+                      break;
+                      }
+                      case 'moh-731-report':{
+                           console.log("using  this  case>>>>>>>moh-731-report'")
+                        dao.getMoh731Report(request, reply);
+                        break;
+                                            }
+                      default:{
+                       console.log("using  this  case>>>>>>>Default'")
+                      dao.getHivSummaryIndicators(request, reply);
+                      break;
+                      }
+                     }
+
                 }
 
             }
@@ -299,6 +324,11 @@ module.exports = function () {
             }
         },
         {
+        /**
+         endpoint  to  get  Reports Indicators
+         @todo Rename  to get-report-indicators by  report  name
+         **/
+
             method: 'GET',
             path: '/etl/indicators-schema',
             config: {
@@ -309,6 +339,19 @@ module.exports = function () {
 
             }
         },
+           {
+
+
+                    method: 'GET',
+                    path: '/etl/indicators-schema-with-sections',
+                    config: {
+                        auth: 'simple',
+                        handler: function (request, reply) {
+                            dao.getIndicatorsSchemaWithSections(request, reply);
+                        }
+
+                    }
+                },
         {
             method: 'GET',
             path: '/etl/hiv-summary-data',

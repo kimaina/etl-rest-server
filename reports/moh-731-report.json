@@ -1,0 +1,170 @@
+{
+  "name": "moh-731-report",
+  "table":{"schema":"etl","tableName":"flat_hiv_summary","alias":"t1"},
+  "joins":[
+    {"joinType":"INNER JOIN","schema":"amrs","tableName":"location","alias":"t2","joinExpression":"t1.location_uuid = t2.uuid"}
+  ],
+  "parameters": [
+    {"name":"startDate", "defaultValue":["10-10-2015"]},
+    {"name":"endDate", "defaultValue":["defaultValue"]},
+    {"name":"locations","defaultValue":[]},
+    {"name":"groupByLocation", "defaultValue":[
+      {"label":"location","expression":"location"}
+    ]
+    }
+  ],
+  "filters": [
+    {"expression":"t1.encounter_datetime >= ?", "parameter":"startDate"},
+    {"expression":"t1.encounter_datetime <= ?", "parameter":"endDate"},
+    {"expression":"t1.location_id in ?", "parameter":"locations"}
+  ],
+  "groupClause":[
+    {"parameter":"groupByLocation"}
+  ],
+  "sections":[{"label":"Care and Treatment","description":""},
+    {"label":"3.1","description":"On Cotrimoxazole Prophylaxis"},
+    {"label":"3.2","description":"Enrolled in Care"},
+    {"label":"3.3","description":"Currently in Care(from the total sheet-this month only and from last 2 months)"},
+    {"label":"3.4","description":"Starting ART"},
+    {"label":"3.5","description":" Revisits on ART (from the tallay sheet -this month only and from last 2 months)"},
+    {"label":"3.6","description":"Currently on ART [ALL] - (Add 3.4 and 3.5 e.g HV03-34=HV03-20+HV03-28)"},
+    {"label":"3.7","description":"Cumulative Ever on ART"},
+    {"label":"3.8","description":"Survival and Retention on ART at 12 months"},
+    {"label":"3.9","description":"Screening"},
+    {"label":"3.10","description":"Prevention with Positives"}
+  ],
+  "indicators": [
+    {
+      "label":"encounters",
+      "expression":"encounters",
+      "patientListExpression":"encounters",
+      "section":"3.1"
+    },
+    {
+      "label":"patients",
+      "expression":"patients",
+      "patientListExpression":"patients",
+      "section":"3.1"
+    },
+    {
+      "label":"on_arvs",
+      "expression":"on_arvs",
+      "patientListExpression":"on_arvs",
+      "section":"3.1"
+    },
+    {
+      "label":"on_arvs_first_line",
+      "expression":"on_arvs_first_line",
+      "patientListExpression":"on_arvs_first_line",
+      "section":"3.1"
+    },
+    {
+      "label":"on_arvs_second_line",
+      "expression":"on_arvs_second_line",
+      "patientListExpression":"on_arvs_second_line",
+      "section":"3.1"
+    },
+    {
+      "label":"on_arvs_third_line",
+      "expression":"on_arvs_third_line",
+      "patientListExpression":"on_arvs_third_line",
+      "section":"3.1"
+    },
+    {
+      "label":"vl_done_past_year",
+      "expression":"vl_done_past_year",
+      "patientListExpression":"vl_done_past_year",
+      "section":"3.1"
+    },
+    {
+      "label":"no_vl_done_past_year",
+      "expression":"no_vl_done_past_year",
+      "patientListExpression":"no_vl_done_past_year",
+      "section":"3.1"
+
+    },
+    {
+      "label":"vl_done_past_year_lte_1000",
+      "expression":"vl_done_past_year_lte_1000",
+      "patientListExpression":"vl_done_past_year_lte_1000",
+      "section":"3.1"
+    },
+    {
+      "label":"vl_done_past_year_gt_1000",
+      "expression":"vl_done_past_year_gt_1000",
+      "patientListExpression":"vl_done_past_year_gt_1000",
+      "section":"3.1"
+    },
+    {
+      "label":"vl_done_this_encounter",
+      "expression":"vl_done_this_encounter",
+      "patientListExpression":"vl_done_this_encounter",
+      "section":"3.1"
+    },
+    {
+      "label":"vl_done_this_encounter_lte_1000",
+      "expression":"vl_done_this_encounter_lte_1000",
+      "patientListExpression":"vl_done_this_encounter_lte_1000",
+      "section":"3.1"
+    },
+    {
+      "label":"vl_done_this_encounter_gt_1000",
+      "expression":"vl_done_this_encounter_gt_1000",
+      "patientListExpression":"vl_done_this_encounter_gt_1000",
+      "section":"3.1"
+    },
+    {
+      "label":"vl_ordered",
+      "expression":"vl_ordered",
+      "patientListExpression":"vl_ordered",
+      "section":"3.1"
+    },
+    {
+      "label":"pending_vl_order",
+      "expression":"pending_vl_order",
+      "patientListExpression":"pending_vl_order",
+      "section":"3.1"
+    },
+    {
+      "label":"pending_vl_order_no_result_after_4_weeks",
+      "expression":"pending_vl_order_no_result_after_4_weeks",
+      "patientListExpression":"pending_vl_order_no_result_after_4_weeks",
+      "section":"3.1"
+    },
+    {
+      "label":"on_arvs_lte_26_weeks",
+      "expression":"on_arvs_lte_26_weeks",
+      "patientListExpression":"on_arvs_lte_26_weeks"
+    },
+    {
+      "label":"on_arvs_lte_52_weeks",
+      "expression":"on_arvs_lte_52_weeks",
+      "patientListExpression":"on_arvs_lte_52_weeks"
+    },
+    {
+      "label":"on_arvs_lte_52_weeks_and_have_vl",
+      "expression":"on_arvs_lte_52_weeks_and_have_vl",
+      "patientListExpression":"on_arvs_lte_52_weeks_and_have_vl",
+      "section":"3.1"
+    },
+    {
+      "label":"on_arvs_lte_52_weeks_and_have_vl_lte_1000",
+      "expression":"on_arvs_lte_52_weeks_and_have_vl_lte_1000",
+      "patientListExpression":"on_arvs_lte_52_weeks_and_have_vl_lte_1000",
+      "section":"3.1"
+    },
+    {
+      "label":"pregnant",
+      "expression":"pregnant",
+      "patientListExpression":"pregnant",
+      "section":"3.1"
+    },
+    {
+      "label":"pregnant_and_on_arvs",
+      "expression":"pregnant_and_on_arvs",
+      "patientListExpression":"pregnant_and_on_arvs",
+      "section":"3.1"
+    }
+  ]
+}
+

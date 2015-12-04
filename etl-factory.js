@@ -1,17 +1,32 @@
 "use strict";
 var _ = require('underscore');
+var walk = require('walk');
 //Report Indicators Json Schema Path
 var indicatorsSchema = require('./reports/indicators.json');
-var hivSummaryReport = require('./reports/hiv-summary-report.json');
+//var hivSummaryReport = require('./reports/hiv-summary-report.json');
 var reports=[];
+//iterate the report folder picking  files satisfying  regex *report.json
+
+var walker = walk.walk("./reports",[]);
+
+ walker.on("file", function (root, fileStats, next) {
+  //test  file  to determine if its report  json
+  if(fileStats.name.match(".*(-report.json)")){
+  console.log('pushing file to reports array>>>>'+fileStats.name);
+  reports.push(require('./reports/'+fileStats.name));
+  }next();
+  });
+
 
 //create an array of reports --->push your report using reports.push(report1,report2,... report(n));
-reports.push(hivSummaryReport);
+//reports.push(hivSummaryReport);
+
 //etl-factory builds and generates queries dynamically in a generic way using indicator-schema and report-schema json files
 module.exports = function() {
     return {
        buildPatientListExpression:buildPatientListExpression,
        buildIndicatorsSchema:buildIndicatorsSchema,
+        buildIndicatorsSchemaWithSections: buildIndicatorsSchemaWithSections,
        singleReportToSql :singleReportToSql,
        reportIndicatorToSql:reportIndicatorToSql
     };
@@ -49,7 +64,7 @@ module.exports = function() {
         _.each(reports,function(report) {
             if(report.name===queryParams.reportName) {
                 _.each(report.indicators, function (reportIndicator) {
-                    console.log('here is the requested indicators', reportIndicator);
+                   console.log('here is the requested indicators', reportIndicator);
                     _.each(indicatorsSchema, function (indicator) {
                         if (indicator.name === reportIndicator.expression) {
                             result.push(indicator);
@@ -60,6 +75,39 @@ module.exports = function() {
         });
         successCallback(result);
     }
+    /**
+    Returns the report json schema,resolved from  request parameter reportName
+    **/
+       function buildIndicatorsSchemaWithSections(queryParams, successCallback) {
+            //Check for undefined params
+             var allReportSections;
+            if(queryParams  === null || queryParams === undefined) return "";
+            var result=[];
+            //Load json schema into the query builder
+            _.each(reports,function(report) {
+                if(report.name===queryParams.reportName) {
+               allReportSections= report.sections;
+                    _.each(report.indicators, function (reportIndicator) {
+                      //  console.log('here is the requested indicators', reportIndicator);
+                        _.each(indicatorsSchema, function (indicator) {
+                            if (indicator.name === reportIndicator.expression) {
+                            //add section infor
+                         try{
+                          if(reportIndicator.section!==undefined){
+                          var res={section_key:reportIndicator.section,indicator_key:indicator};}else{
+                          var res={section_key:"",section,indicator_key:indicator};
+                          }
+                          result.push(res);
+
+                          }catch(e){console.log(reportIndicator)
+                            result.push({indicator});}
+                            }
+                        });
+                    });
+                }
+            });
+            successCallback([result,allReportSections]);
+        }
     function singleReportToSql(requestParams, successCallback) {
         if(requestParams  === null || requestParams === undefined) return "";
         _.each(reports,function(report) {

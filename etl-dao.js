@@ -467,6 +467,34 @@ module.exports = function () {
                 callback(result);
             });
         },
+        getMoh731Report: function getMoh731Report(request, callback) {
+                    var reportName = request.query.report;
+                    var countBy = request.query.countBy;
+                    var startDate = request.query.startDate || new Date().toISOString().substring(0, 10);
+                    var endDate = request.query.endDate || new Date().toISOString().substring(0, 10);
+                    var locations = request.query.locations;
+                    //build query params
+                    var requestParams = {
+                        reportName: reportName,
+                        whereParams: [
+                            {"name":"startDate", "value":startDate},
+                            {"name":"endDate", "value":endDate},
+                            {"name":"location", "value":locations}
+                        ],
+                        countBy: countBy||'num_persons',
+                        groupBy:request.query.groupBy||'groupByLocation',
+                        offset:request.query.startIndex,
+                        limit: request.query.limit,
+                        supplementColumns:"name as location, location_uuid"
+                    };
+                    //build report
+                    reportFactory.singleReportToSql(requestParams, function (exprResult) {
+                        db.reportQueryServer(exprResult, function (result) {
+                            callback(result);
+                        });
+                    });
+                },
+
         getHivSummaryIndicators: function getHivSummaryIndicators(request, callback) {
             console.log('Getting Here', request.query);
             var reportName = request.query.report;
@@ -602,7 +630,7 @@ module.exports = function () {
                 });
             });
         },
-        getIndicatorsSchema: function getIndicatorsSchema(request, callback) {
+        getIndicatorsSchemaWithSections:function getIndicatorsSchemaWithSections(request, callback) {
             console.log('Getting Here', request.query);
             var reportName = request.query.report;
             //Check for undefined query field
@@ -613,12 +641,29 @@ module.exports = function () {
                 reportName: reportName
             };
             //retrieve jsin
-            reportFactory.buildIndicatorsSchema(queryParams, function (result) {
+            reportFactory.buildIndicatorsSchemaWithSections(queryParams, function (result) {
                 var schema = {};
                 schema.result =result;
                 callback(schema);
             });
         },
+          getIndicatorsSchema: function getIndicatorsSchema(request, callback) {
+                    console.log('Getting Here', request.query);
+                    var reportName = request.query.report;
+                    //Check for undefined query field
+                    if (reportName === undefined)
+                        callback(Boom.badRequest('report (Report Name) is missing from your request query'));
+                    //build query params
+                    var queryParams = {
+                        reportName: reportName
+                    };
+                    //retrieve jsin
+                    reportFactory.buildIndicatorsSchema(queryParams, function (result) {
+                        var schema = {};
+                        schema.result =result;
+                        callback(schema);
+                    });
+                },
         getIdsByUuidAsyc: getIdsByUuidAsyc,
         getHivSummaryData: function getHivSummaryData(request, callback) {
             var startDate = request.query.startDate || new Date().toISOString().substring(0, 10);
