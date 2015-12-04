@@ -30,12 +30,12 @@
             {
                 "label":"patients",
                 "expression":"patients",
-                "patientListExpression":"patients"
+                "sql":"count(distinct if($expression,encounter_id,null))"
             },
             {
                 "label":"on_arvs",
                 "expression":"on_arvs",
-                "patientListExpression":"on_arvs"
+
             },
             {
                 "label":"on_arvs_first_line",

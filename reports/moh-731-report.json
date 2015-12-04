@@ -38,7 +38,7 @@
       "label":"encounters",
       "expression":"encounters",
       "patientListExpression":"encounters",
-      "section":"3.7"
+      "section":"3.1"
     },
     {
       "label":"patients",
@@ -68,13 +68,13 @@
       "label":"on_arvs_third_line",
       "expression":"on_arvs_third_line",
       "patientListExpression":"on_arvs_third_line",
-      "section":"3.2"
+      "section":"3.1"
     },
     {
       "label":"vl_done_past_year",
       "expression":"vl_done_past_year",
       "patientListExpression":"vl_done_past_year",
-      "section":"3.3"
+      "section":"3.1"
     },
     {
       "label":"no_vl_done_past_year",

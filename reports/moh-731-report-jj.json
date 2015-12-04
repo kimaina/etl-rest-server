@@ -19,8 +19,21 @@
     "groupClause":{"parameter":"groupParameter"},
     "indicators": [
       "currently_in_care",
-      "revisits_on_art",
-      "on_art",
+      {
+        "label":"unscheduled_visits",
+        "expression":"scheduled_visit",
+        "sql":"count(distinct if($expression,encounter_id,null))"
+      },
+      {
+        "label":"on_art",
+        "expression":"on_art",
+        "sql":"count(distinct if($expression,person_id,null))"
+      },
+      {
+        "label":"revisits_on_art",
+        "expression":"revisits_on_art",
+        "sql":"count(distinct if($expression,encounter_id,null))"
+      }
 
     ]
   },
@@ -45,15 +58,51 @@
     ],
     "groupClause":{"parameter":"groupParameter"},
     "indicators": [
-      "on_pcp_prophylaxis",
-      "enrolled_in_care",
-      "starting_art",
-      "screened_for_tb",
-      "condoms_provided",
-      "using_modern_contracept_methods",
-      "female_gte_18yo_visits",
-      "scheduled_visit",
-      "unscheduled_visits"
+      {
+        "label":"on_pcp_prophylaxis",
+        "expression":"on_pcp_prophylaxis",
+        "sql":"count(distinct if($expression,person_id,null))"
+      },
+      {
+        "label":"enrolled_in_care",
+        "expression":"enrolled_in_care",
+        "sql":"count(distinct if($expression,person_id,null))"
+      },
+      {
+        "label":"starting_art",
+        "expression":"on_pcp_prophylaxis",
+        "sql":"count(distinct if($expression,encounter_id,null))"
+      },
+      {
+        "label":"screened_for_tb",
+        "expression":"on_pcp_prophylaxis",
+        "sql":"count(distinct if($expression,encounter_id,null))"
+      },
+      {
+        "label":"condoms_provided",
+        "expression":"condoms_provided",
+        "sql":"count(distinct if($expression,encounter_id,null))"
+      },
+      {
+        "label":"using_modern_contracept_methods",
+        "expression":"using_modern_contracept_methods",
+        "sql":"count(distinct if($expression,person_id,null))"
+      },
+      {
+        "label":"female_gte_18yo_visits",
+        "expression":"female_gte_18yo_visits",
+        "sql":"count(distinct if($expression,person_id,null))"
+      },
+      {
+        "label":"scheduled_visit",
+        "expression":"scheduled_visit",
+        "sql":"count(distinct if($expression,encounter_id,null))"
+      },
+      {
+        "label":"unscheduled_visits",
+        "expression":"scheduled_visit",
+        "sql":"count(distinct if($expression,encounter_id,null))"
+      }
     ]
   },
 
@@ -73,7 +122,11 @@
     ],
     "groupClause":{"parameter":"groupParameter"},
     "indicators": [
-      "on_art"
+      {
+        "label":"on_art",
+        "expression":"on_art",
+        "sql":"count(distinct if($expression,person_id,null))"
+      }
     ]
   },
 
@@ -100,4 +153,4 @@
 
     ]
   }
-]
+]e
