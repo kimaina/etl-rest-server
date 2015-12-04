@@ -25,13 +25,16 @@ module.exports = function() {
         };
         //create WhereClause
         _.each(indicatorsSchema, function (indicator) {
-            if (indicator.name === queryParams.reportIndicator) {
+            _.each(queryParams.reportIndicator.split(','), function (indicatorName) {
+            if (indicator.name === indicatorName) {
                 if (indicator.expression != "") {
                     result.whereClause= "and "+indicator.expression;
                 }else{
                     result.whereClause= indicator.expression;
                 }
             }
+
+            });
         });
         //identify resource/table
         _.each(reports,function(report) {
@@ -39,6 +42,7 @@ module.exports = function() {
                 result.resource=report.table['schema']+'.'+report.table['tableName'];
             }
         });
+        console.log('here is the whereclause', result);
         successCallback(result);
     }
     function buildIndicatorsSchema(queryParams, successCallback) {

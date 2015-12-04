@@ -235,6 +235,16 @@ module.exports = function () {
         },
         {
             method: 'GET',
+            path: '/etl/patient-by-indicator',
+            config: {
+                auth: 'simple',
+                handler: function (request, reply) {
+                    dao.getPatientByIndicatorAndLocation(request, reply);
+                }
+            }
+        },
+        {
+            method: 'GET',
             path: '/etl/data-entry-statistics/{sub}',
             config: {
                 handler: function (request, reply) {
