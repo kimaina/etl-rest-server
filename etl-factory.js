@@ -27,7 +27,7 @@ module.exports = function() {
        buildPatientListExpression:buildPatientListExpression,
        buildIndicatorsSchema:buildIndicatorsSchema,
         buildIndicatorsSchemaWithSections: buildIndicatorsSchemaWithSections,
-       singleReportToSql :singleReportToSql,
+        singleReportToSql :singleReportToSql,
        reportIndicatorToSql:reportIndicatorToSql
     };
     function buildPatientListExpression(queryParams, successCallback) {
