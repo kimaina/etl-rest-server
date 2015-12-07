@@ -496,6 +496,7 @@ module.exports = function () {
                 },
 
         getHivSummaryIndicators: function getHivSummaryIndicators(request, callback) {
+
             console.log('Getting Here', request.query);
             var reportName = request.query.report;
             var countBy = request.query.countBy;
@@ -519,26 +520,21 @@ module.exports = function () {
             //build report
             reportFactory.singleReportToSql(requestParams, function (exprResult) {
             var arrayResults=[];
-            if(exprResult.isArray){
+           // console.log(exprResult,'Query Paths  returned')
+
             console.log("an  multi reporrt  detected.....")
-            _.each(exprResult,function(singelQueryPart){
-                db.reportQueryServer(exprResult, function (result) {
+            _.each(exprResult,function(singleQueryPart){
+            var u=0;
+            if(u==0){
+                db.reportQueryServer(singleQueryPart, function (result) {
                     console.log(result)
                                arrayResults.push(result);
                             });
-            })
-            console.log('calling  callback')
-            callback(arrayResults)
-            }
-            else{
-            console.log("Single  report   detetced starting.......")
+                            }u=3;
+            });
+            console.log(exprResult,'<<<<<calling  callback');
+            callback(arrayResults);
 
-                db.reportQueryServer(exprResult, function (result) {
-                console.log(result);
-                  console.log("calling callback")
-                    callback(result);
-                });
-                }
             });
         },
         getDataEntryIndicators: function getDataEntryIndicators(subType, request, callback) {

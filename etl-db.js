@@ -220,6 +220,7 @@ var getFilters = function(filters) {
 
 };
     service.reportQueryServer = function(queryParts, callback) {
+    console.log(queryParts,"current query part")
         var result = {};
         var tableAlias='t1';
         if(queryParts['alias'])tableAlias=queryParts['alias'];

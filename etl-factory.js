@@ -112,12 +112,13 @@ module.exports = function() {
         //function  to  create  query parts given  report  name
            function createQueryPartsByReportName(reportName, requestParams) {
                  if(requestParams  === null || requestParams === undefined) return "";
+                 var queryParts={};
                  _.each(reports,function(report) {
-                    console.log(report.name+"<<<<<<The  report  Name<");
-                     if(report.name===requestParams.reportName) {
+                 //   console.log(report.name+"<<<<<<The  report  Name<");
+                     if(report.name===reportName) {
                                  {
-
-                         var queryParts = {
+  console.log(report.name+"<<<<<<The sub  report That was resolved");
+                         queryParts = {
                              columns: [(requestParams.supplementColumns||'location_uuid') + (indicatorsToColumns(report,requestParams.countBy))],
                              table: report.table['schema']+'.'+report.table['tableName'],
                              alias: report.table['alias'],
@@ -127,18 +128,22 @@ module.exports = function() {
                              offset: requestParams.offset,
                              limit: requestParams.limit
                          };
+
+
                          }
-                        return queryParts;
+
                      }
                  });
+                 return  queryParts;
              }
 
     function singleReportToSql(requestParams, successCallback) {
         if(requestParams  === null || requestParams === undefined) return "";
         _.each(reports,function(report) {
-           console.log(report.name+"<<<<<<The  report  Name<");
+console.log("Report  name>>>"+report.name +"Request parameter>>"+requestParams.reportName)
             if(report.name===requestParams.reportName) {
            //test if  it  has  object  key report{indocates  its  a  multi  report}
+               console.log(report.name+"<<<<<<The  report  Name that was resolved @@@<");
            if(report.reports){
            //its  a  multi  report.Loop  through  the  multi reports
             var queryPartsArray=[]

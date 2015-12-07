@@ -136,18 +136,7 @@
       {
         "reportName":"moh-731-past_three_months",
         "alias": "t1"
-      },
-      {
-        "reportName":"moh-731-summary-current_month",
-        "joinExpression":"using ($groupClause)",
-        "alias": "t2"
-      },
-      {
-        "reportName":"moh-731-summary-cumulative",
-        "joinExpression":"using($groupClause)",
-        "alias": "t3"
       }
-
 
     ]
   }

@@ -241,9 +241,10 @@ module.exports = function () {
                 auth: 'simple',
                 handler: function (request, reply) {
                 //determine  report to  call the  right  name
+                request.query.report='MOH-731';
                      switch(request.query.report){
-                    case 'moh-7311-report':{
-                     console.log("using  this  case>>>>>>>moh-7311-report'")
+                    case 'MOH-731':{
+                     console.log("MOH-731")
                       dao.getHivSummaryIndicators(request, reply);
                       break;
                       }
