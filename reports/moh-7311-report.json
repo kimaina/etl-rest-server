@@ -12,7 +12,7 @@
       {"name":"groupParameter","defaultValue":[{"expression":"date_format(encounter_datetime,'%m-%Y')", "label":"date"}]}
     ],
     "filters": [
-      {"expression":"location_uuid in ?","parameter":"locationUuids"}
+      {"expression":"location_uuid in ?","parameter":"locationUuids"},
       {"expression":"timestampdiff(month,encounter_datetime,?) <= 2", "parameter":"startDate"},
       {"expression":"t1.encounter_datetime <= ?", "parameter":"endDate"}
     ],
@@ -52,7 +52,7 @@
       {"name":"groupParameter","defaultValue":[{"expression":"date_format(encounter_datetime,'%m-%Y')", "label":"date"}]}
     ],
     "filters": [
-      {"expression":"location_uuid in ?","parameter":"locationUuids"}
+      {"expression":"location_uuid in ?","parameter":"locationUuids"},
       {"expression":"t1.encounter_datetime >= ?", "parameter":"startDate"},
       {"expression":"t1.encounter_datetime <= ?", "parameter":"endDate"}
     ],
@@ -105,8 +105,6 @@
       }
     ]
   },
-
-
   {
     "name": "moh-731-summary-cumulative",
     "table":{"schema":"etl","tableName":"flat_hiv_summary","alias":"t1"},
@@ -132,12 +130,12 @@
 
 
   {
-    "name":"MOH-731"
-    "parameters":[]
+    "name":"MOH-731",
+    "parameters":[],
     "reports":[
       {
         "reportName":"moh-731-past_three_months",
-        "alias": "t1",
+        "alias": "t1"
       },
       {
         "reportName":"moh-731-summary-current_month",
@@ -148,9 +146,9 @@
         "reportName":"moh-731-summary-cumulative",
         "joinExpression":"using($groupClause)",
         "alias": "t3"
-      },
+      }
 
 
     ]
   }
-]e
+]

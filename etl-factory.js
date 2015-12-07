@@ -13,7 +13,7 @@ var walker = walk.walk("./reports",[]);
   //test  file  to determine if its report  json
   if(fileStats.name.match(".*(-report.json)")){
   console.log('pushing file to reports array>>>>'+fileStats.name);
-  reports.push(require('./reports/'+fileStats.name));
+  reports.push.apply(reports,require('./reports/'+fileStats.name));
   }next();
   });
 
@@ -108,10 +108,46 @@ module.exports = function() {
             });
             successCallback([result,allReportSections]);
         }
+
+        //function  to  create  query parts given  report  name
+           function createQueryPartsByReportName(reportName, requestParams) {
+                 if(requestParams  === null || requestParams === undefined) return "";
+                 _.each(reports,function(report) {
+                    console.log(report.name+"<<<<<<The  report  Name<");
+                     if(report.name===requestParams.reportName) {
+                                 {
+
+                         var queryParts = {
+                             columns: [(requestParams.supplementColumns||'location_uuid') + (indicatorsToColumns(report,requestParams.countBy))],
+                             table: report.table['schema']+'.'+report.table['tableName'],
+                             alias: report.table['alias'],
+                             joins: joinsToSql(report.joins),
+                             where: filtersToSql(requestParams.whereParams, report.parameters, report.filters),
+                             group: groupClauseToSql(report.groupClause, requestParams.groupBy, report.parameters),
+                             offset: requestParams.offset,
+                             limit: requestParams.limit
+                         };
+                         }
+                        return queryParts;
+                     }
+                 });
+             }
+
     function singleReportToSql(requestParams, successCallback) {
         if(requestParams  === null || requestParams === undefined) return "";
         _.each(reports,function(report) {
+           console.log(report.name+"<<<<<<The  report  Name<");
             if(report.name===requestParams.reportName) {
+           //test if  it  has  object  key report{indocates  its  a  multi  report}
+           if(report.reports){
+           //its  a  multi  report.Loop  through  the  multi reports
+            var queryPartsArray=[]
+           _.each(report.reports,function(subReport){
+           queryPartsArray.push(createQueryPartsByReportName(subReport.reportName,requestParams))
+            })
+              successCallback(queryPartsArray);
+           }else{
+
                 var queryParts = {
                     columns: [(requestParams.supplementColumns||'location_uuid') + (indicatorsToColumns(report,requestParams.countBy))],
                     table: report.table['schema']+'.'+report.table['tableName'],
@@ -122,6 +158,7 @@ module.exports = function() {
                     offset: requestParams.offset,
                     limit: requestParams.limit
                 };
+                }
                 successCallback(queryParts);
             }
         });
@@ -134,7 +171,8 @@ module.exports = function() {
             _.each(indicatorsSchema, function (indicator) {
                 if (indicator.name === singleIndicator.expression) {
                     result += ", ";
-                    var column = indicator.reportIndicators[countBy].sql + ' as ' + indicator.name;
+                  //{old way}  var column = indicator.reportIndicators[countBy].sql + ' as ' + indicator.name;
+                    var column = singleIndicator.sql + ' as ' + indicator.name;
                     column = column.replace('$expression',indicator.expression);
                     result+=column;
                 }
@@ -147,6 +185,7 @@ module.exports = function() {
     function reportIndicatorToSql(reportIndicator) {
 
     }
+
     //converts an array of tables into sql
     function joinsToSql(joins) {
         var result =[];

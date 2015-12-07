@@ -242,8 +242,8 @@ module.exports = function () {
                 handler: function (request, reply) {
                 //determine  report to  call the  right  name
                      switch(request.query.report){
-                    case 'hiv-summary-report':{
-                     console.log("using  this  case>>>>>>>hiv-summary-report'")
+                    case 'moh-7311-report':{
+                     console.log("using  this  case>>>>>>>moh-7311-report'")
                       dao.getHivSummaryIndicators(request, reply);
                       break;
                       }

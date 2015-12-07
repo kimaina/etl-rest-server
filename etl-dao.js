@@ -518,9 +518,27 @@ module.exports = function () {
             };
             //build report
             reportFactory.singleReportToSql(requestParams, function (exprResult) {
+            var arrayResults=[];
+            if(exprResult.isArray){
+            console.log("an  multi reporrt  detected.....")
+            _.each(exprResult,function(singelQueryPart){
                 db.reportQueryServer(exprResult, function (result) {
+                    console.log(result)
+                               arrayResults.push(result);
+                            });
+            })
+            console.log('calling  callback')
+            callback(arrayResults)
+            }
+            else{
+            console.log("Single  report   detetced starting.......")
+
+                db.reportQueryServer(exprResult, function (result) {
+                console.log(result);
+                  console.log("calling callback")
                     callback(result);
                 });
+                }
             });
         },
         getDataEntryIndicators: function getDataEntryIndicators(subType, request, callback) {

@@ -1,4 +1,4 @@
-    {
+   [ {
         "name": "hiv-summary-report",
         "table":{"schema":"etl","tableName":"flat_hiv_summary","alias":"t1"},
         "joins":[
@@ -34,7 +34,7 @@
             },
             {
                 "label":"on_arvs",
-                "expression":"on_arvs",
+                "expression":"on_arvs"
 
             },
             {
@@ -134,4 +134,4 @@
             }
         ]
     }
-
+]
