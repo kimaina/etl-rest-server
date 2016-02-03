@@ -36,12 +36,12 @@
             {
                 "label":"encounters",
                 "expression":"encounters",
-                "sql":"count(distinct encounter_id)"
+                "sql":"count($expression)"
             },
             {
                 "label":"patients",
                 "expression":"patients",
-                "sql":"count(distinct person_id)"
+                "sql":"count($expression)"
             },
             {
                 "label":"on_arvs",

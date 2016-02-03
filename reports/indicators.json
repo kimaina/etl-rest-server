@@ -2,12 +2,12 @@
     {
         "name":"encounters",
         "label": "Total # of encounters",
-        "expression": ""
+        "expression": "distinct encounter_id"
     },
     {
         "name":"patients",
         "label": "Total # of patients",
-        "expression": ""
+        "expression": "distinct person_id"
 
     },
     {
