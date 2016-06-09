@@ -17,6 +17,7 @@ var HapiSwagger = require('hapi-swagger');
 var Pack = require('./package');
 var hapiAuthorization = require('hapi-authorization');
 var authorizer = require('./authorization/etl-authorizer');
+var user ='';
 var server = new Hapi.Server({
   connections: {
     //routes: {cors:{origin:["https://amrs.ampath.or.ke:8443"]}}
@@ -64,7 +65,7 @@ var validate = function (username, password, callback) {
     });
     res.on('end', function () {
       var result = JSON.parse(body);
-
+      user = result.user.username;
       authorizer.setUser(result.user);
       var currentUser = {
         username: username,
@@ -118,13 +119,7 @@ server.register([
   {
     register: Good,
     options: {
-      reporters: [{
-        reporter: require('good-console'),
-        events: {
-          response: '*',
-          log: '*'
-        }
-      }]
+      reporters: []
     }
   }
 ],
@@ -145,10 +140,28 @@ server.register([
     for (var route in elasticRoutes) {
       server.route(elasticRoutes[route]);
     }
+    server.on('response', function (request) {
+      if (request.response === undefined ||request.response===null){
+        console.log("No response");
+      }else{
+        console.log(
+            'Username:',
+            user +'\n'+
+            server.info.uri + ': '
+            + request.method.toUpperCase() + ' '
+            + request.url.path + ' \n '
+            + request.response.statusCode
+        );
+
+      }
+
+    })
 
     server.ext('onPreResponse', corsHeaders);
     server.start(function () {
       server.log('info', 'Server running at: ' + server.info.uri);
     });
+
+
   });
 module.exports = server;
