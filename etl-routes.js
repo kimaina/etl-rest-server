@@ -789,6 +789,16 @@ module.exports = function () {
                     dao.postLabOrderToEid(request, reply);
                 }
             }
+        },
+        {
+            method: 'GET',
+            path: '/etl/locations',
+            config: {
+                auth: 'simple',
+                handler: function (request, reply) {
+                    dao.listLocations(request, reply);
+                }
+            }
         }
     ];
 } ();

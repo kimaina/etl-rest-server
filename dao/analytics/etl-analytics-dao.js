@@ -12,7 +12,7 @@ module.exports = function () {
 
       var passed_params = request.params.userParams.split('/');
       var table_ = "amrs." + passed_params[0];
-      var column_name = passed_params[1];
+      var column_name = passed_params[1]||'*';
       var column_value = passed_params[2];
 
 
@@ -23,6 +23,21 @@ module.exports = function () {
         columns: request.query.fields || "*",
         table: table_,
         where: [column_name + " = ?", column_value],
+        // order: order || [{column:'encounter_datetime',asc:false}],
+        offset: request.query.startIndex,
+        limit: request.query.limit
+      };
+
+      db.queryServer_test(queryParts, function (result) {
+        callback(result);
+      });
+    },
+    listLocations: function listLocations(request, callback) {
+      var table_ = "amrs.location";
+      var queryParts = {
+        columns: request.query.fields || "*",
+        table: table_,
+        where: ["retired = ?", 0],
         // order: order || [{column:'encounter_datetime',asc:false}],
         offset: request.query.startIndex,
         limit: request.query.limit
