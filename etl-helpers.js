@@ -45,7 +45,7 @@ module.exports = function() {
       };
     },
     getConceptName: function getConceptName(code) {
-      if (code === null || code === undefined) return "";
+      if (code === null || code === undefined) return "N/A";
       var concepts = {
         664: "NEGATIVE",
         703: "POSITIVE",
