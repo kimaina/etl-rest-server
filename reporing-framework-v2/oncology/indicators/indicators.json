@@ -1,0 +1,18 @@
+[
+    
+    {
+        "name":"on_arvs",
+        "description": "Total # of patients who are on ARVs",
+        "expression": "cur_arv_line is not null"
+    },
+    {
+        "name":"vl_ordered",
+        "description": "# of patient(s) whose Viral Load has been ordered",
+        "expression": "vl_order_date=encounter_datetime"
+    },
+    {
+        "name":"pending_vl_order",
+        "description": "# of patient(s) whose Viral Load has been Ordered but awaiting result",
+        "expression": "timestampdiff(week,vl_order_date,encounter_datetime) >= 0 and vl_1_date < vl_order_date"
+    }
+]

@@ -1,0 +1,296 @@
+[
+  {
+    "name": "patient-flow-report",
+    "table": {
+      "schema": "amrs",
+      "tableName": "visit",
+      "alias": "t1"
+    },
+    "joins": [
+      {
+        "joinType": "LEFT OUTER JOIN",
+        "schema": "amrs",
+        "tableName": "encounter",
+        "alias": "t4",
+        "joinExpression": "t1.visit_id=t4.visit_id"
+      },
+      {
+        "joinType": "LEFT OUTER JOIN",
+        "schema": "amrs",
+        "tableName": "person_name",
+        "alias": "t2",
+        "joinExpression": "t1.patient_id  = t2.person_id"
+      },
+      {
+        "joinType": "LEFT OUTER JOIN",
+        "schema": "amrs",
+        "tableName": "patient_identifier",
+        "alias": "t3",
+        "joinExpression": "t1.patient_id  = t3.patient_id"
+      },
+      {
+        "joinType": "LEFT OUTER JOIN",
+        "schema": "amrs",
+        "tableName": "person",
+        "alias": "t5",
+        "joinExpression": "t1.patient_id = t5.person_id"
+      },
+
+      {
+        "joinType": "LEFT OUTER JOIN",
+        "schema": "amrs",
+        "tableName": "encounter_provider",
+        "alias": "t6",
+        "joinExpression": "t4.encounter_id=t6.encounter_id"
+      },
+      {
+        "joinType": "LEFT OUTER JOIN",
+        "schema": "amrs",
+        "tableName": "provider",
+        "alias": "t7",
+        "joinExpression": "t7.provider_id = t6.provider_id"
+      },
+
+      {
+        "joinType": "LEFT OUTER JOIN",
+        "schema": "amrs",
+        "tableName": "encounter_type",
+        "alias": "t9",
+        "joinExpression": "t9.encounter_type_id=t4.encounter_type"
+      },
+      {
+        "joinType": "LEFT OUTER JOIN",
+        "schema": "amrs",
+        "tableName": "person_name",
+        "alias": "t8",
+        "joinExpression": "t7.person_id  = t8.person_id"
+      },
+      {
+        "joinType": "LEFT OUTER JOIN",
+        "schema": "amrs",
+        "tableName": "users",
+        "alias": "t10",
+        "joinExpression": "t1.creator  = t10.user_id"
+      },
+      {
+        "joinType": "LEFT OUTER JOIN",
+        "schema": "amrs",
+        "tableName": "person_name",
+        "alias": "t11",
+        "joinExpression": "t10.person_id  = t11.person_id"
+      },
+      {
+        "joinType": "LEFT OUTER JOIN",
+        "schema": "amrs",
+        "tableName": "location",
+        "alias": "t12",
+        "joinExpression": "t1.location_id  = t12.location_id"
+      }
+
+
+
+    ],
+    "parameters": [
+      {
+        "name": "dateStarted",
+        "defaultValue": [
+          "10-10-2015"
+        ]
+      },
+      {
+        "name": "locations"
+      },
+      {
+        "name": "groupByEncounter",
+        "defaultValue": [
+          {
+            "label": "encounter_id",
+            "expression": "t4.encounter_id"
+          }
+        ]
+      }
+    ],
+    "filters": [
+      {
+        "expression": "date(t1.date_started) = ?",
+        "parameter": "dateStarted"
+      },
+      {
+        "expression": "t1.location_id in ?",
+        "parameter": "locations"
+      }
+    ],
+    "groupClause": [
+      {
+        "parameter": "groupByEncounter"
+      }
+    ],
+    "orderBy": [
+      {
+        "column": "t1.date_started",
+        "order": "asc"
+      },
+      {
+        "column": "t1.visit_id",
+        "order": "asc"
+      },
+      {
+        "column": "t4.date_created",
+        "order": "asc"
+      }
+    ],
+    "indicators": [],
+    "supplementColumns": [
+      {
+        "label": "visit_id",
+        "type": "single",
+        "sql": "t1.visit_id"
+      },
+
+      {
+        "label": "visit_start",
+        "type": "single",
+        "sql": "t1.date_started"
+      },
+      {
+        "label": "triaged",
+        "type": "single",
+        "sql": "case when t4.encounter_type=110 then t4.encounter_datetime else null end"
+      },
+      {
+        "label": "time_to_be_triaged",
+        "type": "single",
+        "sql": "case when t4.encounter_type=110 then TIMESTAMPDIFF(MINUTE,t1.date_started,t4.encounter_datetime) else null end"
+      },
+      {
+        "label": "seen_by_clinician",
+        "type": "single",
+        "sql": "case when t4.encounter_type in (1,2,3,4,14,17,105,106) then t4.encounter_datetime else null end"
+      },
+      {
+        "label": "visit_end",
+        "type": "single",
+        "sql": "t1.date_stopped"
+      },
+      {
+        "label": "creator",
+        "type": "single",
+        "sql": "t1.creator"
+      },
+      {
+        "label": "encounter_type",
+        "type": "single",
+        "sql": "t4.encounter_type"
+      },
+      {
+        "label": "encounter_type_name",
+        "type": "single",
+        "sql": "t9.name"
+      },
+
+      {
+        "label": "encounter_start",
+        "type": "single",
+        "sql": "t4.encounter_datetime"
+      },
+      {
+        "label": "encounter_end",
+        "type": "single",
+        "sql": "t4.date_created"
+      },
+      {
+        "label": "patient_id",
+        "type": "single",
+        "sql": "t1.patient_id"
+      },
+      {
+        "label": "patient_uuid",
+        "type": "single",
+        "sql": "t5.uuid"
+      },
+      {
+        "label": "given_name",
+        "type": "single",
+        "sql": "t2.given_name"
+      },
+      {
+        "label": "middle_name",
+        "type": "single",
+        "sql": "t2.middle_name"
+      },
+      {
+        "label": "family_name",
+        "type": "single",
+        "sql": "t2.family_name"
+      },
+      {
+        "label": "identifiers",
+        "type": "single",
+        "sql": "group_concat(distinct t3.identifier)"
+      },
+      {
+        "label": "person_id",
+        "type": "single",
+        "sql": "t7.person_id"
+      },
+      {
+        "label": "visit_person_id",
+        "type": "single",
+        "sql": "t10.person_id"
+      },
+
+      {
+        "label": "provider_given_name",
+        "type": "single",
+        "sql": "t8.given_name"
+      },
+      {
+        "label": "provider_middle_name",
+        "type": "single",
+        "sql": "t8.middle_name"
+      },
+      {
+        "label": "provider_family_name",
+        "type": "single",
+        "sql": "t8.family_name"
+      },
+      {
+        "label": "Visit_creator",
+        "type": "single",
+        "sql": "t10.creator"
+      },
+      {
+        "label": "visit_start_given_name",
+        "type": "single",
+        "sql": "t11.given_name"
+      },
+      {
+        "label": "visit_start_middle_name",
+        "type": "single",
+        "sql": "t11.middle_name"
+      },
+      {
+        "label": "visit_start_family_name",
+        "type": "single",
+        "sql": "t11.family_name"
+      },
+      {
+        "label":"location",
+        "type":"single",
+        "sql":"t12.name"
+      },
+      {
+        "label":"location_id",
+        "type":"single",
+        "sql":"t12.location_id"
+      }
+
+    ],
+    "indicatorHandlers": [
+      {
+        "processor": "processPatientFlow",
+        "indicators": []
+      }
+    ]
+  }
+]

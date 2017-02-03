@@ -1,0 +1,69 @@
+[
+  {
+    "name": "medical-history-report",
+    "table": {
+      "schema": "etl",
+      "tableName": "flat_hiv_summary",
+      "alias": "t1"
+    },
+    "joins": [
+      {
+        "joinType": "INNER JOIN",
+        "schema": "amrs",
+        "tableName": "person",
+        "alias": "t2",
+        "joinExpression": "t1.person_id=t2.person_id"
+      }
+    ],
+    "parameters": [
+      {
+        "name": "patientUuid"
+      }
+    ],
+    "filters": [
+      {
+        "expression": "t2.uuid  = ?",
+        "parameter": "patientUuid"
+      },
+      {"expression":"t1.prev_arv_meds != t1.cur_arv_meds", "processForce":true}
+    ],
+    "groupClause": [
+
+    ],
+    "orderBy": [
+      {"column":"t1.encounter_datetime", "order":"desc", "name":"orderByDate"}
+    ],
+    "indicators": [],
+    "supplementColumns": [
+      {
+        "label": "encounter_datetime",
+        "type": "single",
+        "sql": "DATE_FORMAT(t1.encounter_datetime,'%d-%m-%Y')"
+      },
+      {
+        "label": "current_regimen",
+        "type": "single",
+        "sql": "t1.cur_arv_meds"
+      },
+      {
+        "label": "previous_regimen",
+        "type": "single",
+        "sql": "t1.prev_arv_meds"
+      },
+      {
+        "label": "previous_vl",
+        "type": "single",
+        "sql": "t1.vl_1"
+      },
+      {
+        "label": "previous_vl_date",
+        "type": "single",
+        "sql": "DATE_FORMAT(t1.vl_1_date,'%d-%m-%Y')"
+      }
+    ],
+    "indicatorHandlers":[
+      {"processor":"findChanges","indicators":["previous_regimen","current_regimen"]},
+      {"processor":"convertConceptIdToName","indicators":["previous_regimen","current_regimen"]}
+    ]
+  }
+]
