@@ -1,0 +1,29 @@
+[
+    {
+        "description": "supplemental columns for flat_hiv_summary",
+        "tables":["etl.flat_hiv_summary"],
+        "columns":[
+            {
+                "column_name":"art_net_cohort_at_12_months",
+                "description": "ART Net Cohort at 12 months",
+                "column_dependencies": [
+                    "flat_hiv_summary.transfer_out",
+                    "flat_hiv_summary.out_of_care"
+                ],
+                "expression": "coalesce(transfer_out, out_of_care) is null"
+            },  
+        ]
+    },
+
+    {
+        "description": "supplemental columns for etl.flat_hiv_summary and amrs.encounter"
+    }
+
+]
+
+   {
+       "ui_column_label":"On ARVs <= 26 weeks",
+       "column_name":"total_on_arvs_lte_26_weeks",
+       "description": "Of patients who are active in care, the total number on ART at the time of there last encounter... "
+       "sql": "count(distinct if($on_arvs_lte_26_weeks,person_id,0))"
+   },

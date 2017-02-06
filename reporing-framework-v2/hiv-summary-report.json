@@ -38,6 +38,7 @@
             {"expression":"(t1.next_clinical_datetime_hiv is null or next_clinical_datetime_hiv  >= ?)", "parameter":"endDate"}
 
         ],
+        "description": "This creates a dataset of one row per clinical visit where time s"
         "groupClause":[
             {"parameter":"groupByLocation"},
             {"parameter":"groupByYear"},
