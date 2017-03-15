@@ -1086,7 +1086,30 @@ module.exports = function () {
                 }
             },
             handler: function (request, reply) {
-                dao.getPatientListByIndicator(request, reply);
+                request.query.reportName ='hiv-summary-report';
+                var asyncRequests = 0; //this should be the number of async requests needed before they are triggered
+
+                var onResolvedPromise = function (promise) {
+                    asyncRequests--;
+                    if (asyncRequests <= 0) { //voting process to ensure all pre-processing of request async operations are complete
+                        dao.getPatientListReportByIndicatorAndLocation(request, reply);
+                    }
+                };
+
+                //establish the number of asyncRequests
+                //this is done prior to avoid any race conditions
+                if (request.query.locationUuids) {
+                    asyncRequests++;
+                }
+
+                if (asyncRequests === 0)
+                    dao.getPatientListReportByIndicatorAndLocation(request, reply);
+                if (request.query.locationUuids) {
+                    dao.getIdsByUuidAsyc('amrs.location', 'location_id', 'uuid', request.query.locationUuids,
+                        function (results) {
+                            request.query.locations = results;
+                        }).onResolved = onResolvedPromise;
+                }
             },
             description: 'Get patient list by indicator',
             notes: 'Returns a patient list by indicator for a given location.',
@@ -1118,12 +1141,13 @@ module.exports = function () {
                 }
             },
             handler: function (request, reply) {
+                request.query.reportName ='hiv-summary-monthly-report';
                 var asyncRequests = 0; //this should be the number of async requests needed before they are triggered
 
                 var onResolvedPromise = function (promise) {
                     asyncRequests--;
                     if (asyncRequests <= 0) { //voting process to ensure all pre-processing of request async operations are complete
-                        dao.getPatientByIndicatorAndLocation(request, reply);
+                        dao.getPatientListReportByIndicatorAndLocation(request, reply);
                     }
                 };
 
@@ -1134,7 +1158,7 @@ module.exports = function () {
                 }
 
                 if (asyncRequests === 0)
-                    dao.getPatientByIndicatorAndLocation(request, reply);
+                    dao.getPatientListReportByIndicatorAndLocation(request, reply);
                 if (request.query.locationUuids) {
                     dao.getIdsByUuidAsyc('amrs.location', 'location_id', 'uuid', request.query.locationUuids,
                         function (results) {
@@ -1348,7 +1372,6 @@ module.exports = function () {
             },
             handler: function (request, reply) {
                 var asyncRequests = 0; //this should be the number of async requests needed before they are triggered
-                var requestQuery = JSON.stringify(request.query);
                 var onResolvedPromise = function (promise) {
                     asyncRequests--;
                     if (asyncRequests <= 0) { //voting process to ensure all pre-processing of request async operations are complete
