@@ -1161,35 +1161,7 @@ module.exports = function () {
                             type: 'query', //can be in either query or params so you have to specify
                             name: 'report', //name of the parameter
                             value: 'clinical-reminder-report' //parameter value
-                        }, { //patient-list-report-currently_in_care_total
-                            type: 'query', //can be in either query or params so you have to specify
-                            name: 'report', //name of the parameter
-                            value: 'patient-list-report-not_on_art_total' //parameter value
-                        }, {
-                            type: 'query', //can be in either query or params so you have to specify
-                            name: 'report', //name of the parameter
-                            value: 'patient-list-report-currently_in_care_total' //parameter value
-                        }, {
-                            type: 'query', //can be in either query or params so you have to specify
-                            name: 'report', //name of the parameter
-                            value: 'patient-list-report-on_art_total' //parameter value
-                        }, {
-                            type: 'query', //can be in either query or params so you have to specify
-                            name: 'report', //name of the parameter
-                            value: 'patient-list-report-patients_requiring_vl' //parameter value
-                        }, {
-                            type: 'query', //can be in either query or params so you have to specify
-                            name: 'report', //name of the parameter
-                            value: 'patient-list-report-tested_appropriately' //parameter value
-                        }, {
-                            type: 'query', //can be in either query or params so you have to specify
-                            name: 'report', //name of the parameter
-                            value: 'patient-list-report-not_tested_appropriately' //parameter value
-                        }, {
-                            type: 'query', //can be in either query or params so you have to specify
-                            name: 'report', //name of the parameter
-                            value: 'patient-list-report-virally_suppressed' //parameter value
-                        }, {
+                        },{
                             type: 'query', //can be in either query or params so you have to specify
                             name: 'report', //name of the parameter
                             value: 'patient-register-report' //parameter value
