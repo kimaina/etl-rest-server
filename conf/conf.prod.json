@@ -1,0 +1,105 @@
+{
+  "openmrs": {
+    "host": "amrs.ampath.or.ke",
+    "port": 8443,
+    "https" : true
+  },
+  "etl": {
+    "host": "amrsreporting.ampath.or.ke",
+    "port": 8002,
+    "key": "/opt/etl/etl-rest-server/conf/ampath.or.ke.key",
+    "cert": "/opt/etl/etl-rest-server/conf/ampath.or.ke.crt",
+    "tls": true,
+    "uploadsDirectory":"/opt/etl/etl-demo/etl-rest-server/uploads/"
+  },
+  "mysql": {
+    "connectionLimit": 20,
+    "host": "10.50.80.45",
+    "port": "3306",
+    "user": "etl_user",
+    "password": "Eek6FEuxS7Y8IGlV",
+    "multipleStatements": true
+  },
+  "eidSyncOn": false,
+  "clusteringEnabled" : true,
+  "eid": {
+    "locations": [
+      {
+        "name": "ampath",
+        "host": "http://eid.ampath.or.ke",
+        "generalApiKey": "u57x5e3aw",
+        "cd4ApiKey": "3h51u3eyao",
+        "loadCd4": true
+      },
+      {
+        "name": "alupe",
+        "host": "http://41.89.222.245",
+        "generalApiKey": "xu80t4ykw3",
+        "cd4ApiKey": "xu80t4ykw3",
+        "loadCd4": false
+      }
+    ],
+    "port": "85",
+    "generalPath": "/eid/orders/api.php",
+    "cd4PanelPath": "/cd4/orders/api.php"
+  },
+
+  "eidServer":
+  {
+    "test": {
+      "name":"Ampath Test Bed",
+      "host": "http://eid.ampath.or.ke",
+      "port": 85,
+      "apiKey":"u57x5e3aw",
+      "post":{
+        "dnaPcr":"/demo/",
+        "vl":"/demo/",
+        "cd4":"/cd4demo/"
+      },
+      "get":{
+        "dnaPcr":"/demo/",
+        "vl":"/demo/",
+        "cd4":"/cd4demo/"
+      }
+    },
+    "ampath": {
+      "name":"Ampath",
+      "host": "http://eid.ampath.or.ke",
+      "port": 85,
+      "apiKey":"u57x5e3aw",
+      "post":{
+        "dnaPcr":"/eid/",
+        "vl":"/eid/",
+        "cd4":"/cd4/"
+      },
+      "get":{
+        "dnaPcr":"/eid/",
+        "vl":"/eid/",
+        "cd4":"/cd4/"
+      }
+    },
+    "alupe": {
+      "name":"Alupe",
+      "host": "http://41.89.222.245",
+      "port": 85,
+      "apiKey":"xu80t4ykw3",
+      "post":{
+        "dnaPcr":"/eid/",
+        "vl":"/eid/",
+        "cd4":"/cd4/"
+      },
+      "get":{
+        "dnaPcr":"/eid/",
+        "vl":"/eid/",
+        "cd4":"/cd4/"
+      }
+    }
+  },
+  "logging" : {
+    "eidPath" : "/var/log/eid",
+    "eidFile": "eid-errors.log"
+  }
+,
+  "eidSyncApiKey":"df5kd1sd9dk6kdd9v9b"
+}
+

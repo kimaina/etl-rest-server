@@ -26,6 +26,8 @@ reportList.push.apply(reportList, require('./reports/labs-report.json'));
 reportList.push.apply(reportList, require('./reports/viral-load-monitoring-report.json'));
 reportList.push.apply(reportList, require('./reports/medical-history-report.json'));
 reportList.push.apply(reportList, require('./reports/clinic-lab-orders-report.json'));
+reportList.push.apply(reportList, require('./reports/patient-care-tracker-report.json'));
+
 //etl-factory builds and generates queries dynamically in a generic way using indicator-schema and report-schema json files
 module.exports = function () {
     var reports;
@@ -816,7 +818,7 @@ module.exports = function () {
                         'person.gender', 'person.birthdate', 'extract(year from (from_days(datediff(now(),person.birthdate)))) as age',
                         'case when (timestampdiff(day,vl_order_date,now()) between 0 and 14) and (vl_1_date is null or vl_order_date > vl_1_date) then true else false end as has_pending_vl_test',
                         't1.enrollment_date', 'hiv_start_date', 'arv_start_location', 'arv_first_regimen_start_date', 'arv_start_date as cur_regimen_arv_start_date', 'cur_arv_line',
-                        'vl_1', 'vl_1_date'
+                        'vl_1', 'vl_1_date','patient_care_status', 'out_of_care', 'encounter_type', 'encounter_datetime', 'rtc_date', 'prev_rtc_date', 'prev_clinical_rtc_date_hiv'
                     ],
                     concatColumns: [
                         "concat(COALESCE(person_name.given_name,''),' ',COALESCE(person_name.middle_name,''),' ',COALESCE(person_name.family_name,'')) as person_name",

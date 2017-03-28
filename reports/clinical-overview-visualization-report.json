@@ -86,6 +86,11 @@
                 "sql": "count(distinct if($expression, person_id,null))"
             },
             {
+                "label": "active_in_care",
+                "expression": "active_in_care",
+                "sql": "count(distinct if($expression, person_id,null))"
+            },
+            {
                 "label": "not_on_art_total",
                 "expression": "not_on_art_total",
                 "sql": "count(distinct if($expression, person_id,null))"

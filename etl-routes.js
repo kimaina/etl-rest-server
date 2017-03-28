@@ -1242,7 +1242,12 @@ module.exports = function () {
                             type: 'query', //can be in either query or params so you have to specify
                             name: 'report', //name of the parameter
                             value: 'clinical-patient-care-status-overview-report' //parameter value
+                        }, {
+                            type: 'query', //can be in either query or params so you have to specify
+                            name: 'report', //name of the parameter
+                            value: 'patient-care-tracker-report' //parameter value
                         }
+
 
                     ]
                 }
@@ -1558,7 +1563,7 @@ module.exports = function () {
                             .then((result) => {
                                 reply(result);
                             }).catch((error) => {
-                            reply(Boom.badRequest(JSON.stringify(error)));
+                            reply(error);
                         });
                     });
             },
