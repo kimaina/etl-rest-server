@@ -177,7 +177,7 @@
         "name": "currently_in_care_total",
         "label": "currently in care total",
         "description": "A patient is in care if it has been less than 90 days from the return to clinic date within the given reporting period.  For example, if at the last clinical encounter, the patient was given an RTC date of February 1, she is active in care in February, March and April. If she does not come back to clinic, she will be first out of care in May. Note, we are using the last RTC  date given by a clinician for this definition.",
-        "expression": "encounter_datetime >= enrollment_date and (coalesce(t1.death_date, out_of_care) is null)"
+        "expression": "case when date(t1.death_date) <= t2.endDate or date(outreach.death_date) <= t2.endDate then null when t1.transfer_out is not  null or outreach.transfer_out is not null or transfer.transfer_out is not null then null when t1.patient_care_status in (9083) or outreach.patient_care_status in (9083) then null when outreach.patient_care_status in (9036) or t1.patient_care_status in (9036) then null when  timestampdiff(day, if(t1.rtc_date, t1.rtc_date, DATE_ADD(t1.encounter_datetime, INTERVAL 30 DAY)), t2.endDate) <= 90 then 1 end"
     },
     {
         "name": "pre_art_total",
@@ -201,19 +201,19 @@
         "name": "revisits_on_art_total",
         "label": "revisits on art total",
         "description": "Total # of patient revisits on ART",
-        "expression": "encounter_datetime > arv_start_date and (coalesce(t1.death_date, out_of_care) is null)"
+        "expression": "t1.encounter_datetime > t1.arv_start_date and (coalesce(t1.death_date, t1.out_of_care) is null)"
     },
     {
         "name": "on_art_total",
         "label": "on art total",
         "description": "A patient is on ART if they are in care and was prescribed ART at their last clinical encounter.",
-        "expression": "encounter_datetime >= arv_start_date and (coalesce(t1.death_date, out_of_care) is null)"
+        "expression": "t1.encounter_datetime >= t1.arv_start_date and (coalesce(t1.death_date, t1.out_of_care) is null)"
     },
     {
         "name": "not_on_art_total",
         "label": "not on art total",
         "description": "Total # of patients not on ART",
-        "expression": "(encounter_datetime < arv_start_date  or arv_start_date is null) and (coalesce(t1.death_date, out_of_care) is null)"
+        "expression": "(t1.encounter_datetime < t1.arv_start_date  or t1.arv_start_date is null) and (coalesce(t1.death_date, t1.out_of_care) is null)"
     },
     {
         "name": "on_original_first_line",
@@ -339,13 +339,13 @@
         "name": "virally_suppressed",
         "label": "virally suppressed",
         "description": "# of patient(s) who are virally suppressed",
-        "expression": "timestampdiff(month,arv_start_date,encounter_datetime) >= 6 and timestampdiff(day, date(vl_1_date), date(t2.endDate)) <= 365 and (coalesce(t1.death_date, out_of_care) is null) and vl_1 < 1000"
+        "expression": "timestampdiff(month,t1.arv_start_date,t1.encounter_datetime) >= 6 and timestampdiff(day, date(t1.vl_1_date), date(t2.endDate)) <= 365 and (coalesce(t1.death_date, t1.out_of_care) is null) and t1.vl_1 < 1000"
     },
     {
         "name": "not_virally_suppressed",
         "label": "not virally suppressed",
         "description": "# of patient(s) who are not virally suppressed",
-        "expression": "timestampdiff(month,arv_start_date,encounter_datetime) >= 6 and timestampdiff(day, date(vl_1_date), date(t2.endDate)) <= 365 and (coalesce(t1.death_date, out_of_care) is null) and vl_1 >= 1000"
+        "expression": "timestampdiff(month,t1.arv_start_date,t1.encounter_datetime) >= 6 and timestampdiff(day, date(t1.vl_1_date), date(t2.endDate)) <= 365 and (coalesce(t1.death_date, t1.out_of_care) is null) and t1.vl_1 >= 1000"
     },
     {
         "name": "perc_virally_suppressed",
@@ -483,37 +483,37 @@
         "name": "patients_requiring_vl",
         "label": "patients requiring vl",
         "description": "patients requiring vl",
-        "expression": "timestampdiff(month,arv_start_date,encounter_datetime) >= 6"
+        "expression": "timestampdiff(month,t1.arv_start_date,t1.encounter_datetime) >= 6"
     },
     {
         "name": "tested_appropriately",
         "label": "tested appropriately",
         "description": "Patients who are under ART and are missing Viral Load in past year",
-        "expression": "timestampdiff(month, arv_start_date, encounter_datetime) >= 6 and timestampdiff(day, date(vl_1_date), date(t2.endDate)) <= 365"
+        "expression": "timestampdiff(month, t1.arv_start_date, t1.encounter_datetime) >= 6 and timestampdiff(day, date(t1.vl_1_date), date(t2.endDate)) <= 365"
     },
     {
         "name": "not_tested_appropriately",
         "label": "not tested appropriately",
         "description": "Patients who are under ART and are missing Viral Load in past year",
-        "expression": "timestampdiff(month, arv_start_date, encounter_datetime) >= 6 and (timestampdiff(day,vl_1_date, date(t2.endDate)) > 365 or vl_1_date is null)"
+        "expression": "timestampdiff(month, t1.arv_start_date, t1.encounter_datetime) >= 6 and (timestampdiff(day,t1.vl_1_date, date(t2.endDate)) > 365 or t1.vl_1_date is null)"
     },
     {
         "name": "due_for_annual_vl",
         "label": "due for annual vl",
         "description": "In a specific month, these are patients who need new Annual Viral Load  but none was ordered in that month. For example, If a patient had an annual VL on 10/2015, the he/she will be due on 10/2016 and not any other month",
-        "expression": "timestampdiff(month, arv_start_date, encounter_datetime) >= 6 and (DATE_ADD(vl_1_date, INTERVAL 1 YEAR)  between  DATE_FORMAT(t2.endDate,'%Y-%m-01') and t2.endDate) and (orders.date_created is null or orders.concept_id!=856)"
+        "expression": "timestampdiff(month, t1.arv_start_date, t1.encounter_datetime) >= 6 and (DATE_ADD(t1.vl_1_date, INTERVAL 1 YEAR)  between  DATE_FORMAT(t2.endDate,'%Y-%m-01') and t2.endDate) and (orders.date_created is null or orders.concept_id!=856)"
     },
     {
         "name": "pending_vl_orders",
         "label": "pending vl orders",
         "description": "In a specific month, these are patients with pending Viral Load Orders that have not resulted.",
-        "expression": "orders.concept_id=856 and (date(orders.date_created)  between  DATE_FORMAT(t2.endDate,'%Y-%m-01') and t2.endDate) and date(vl_1_date) != date(orders.date_created) and  date(vl_1_date) < DATE_FORMAT(t2.endDate,'%Y-%m-01')"
+        "expression": "orders.concept_id=856 and (date(orders.date_created)  between  DATE_FORMAT(t2.endDate,'%Y-%m-01') and t2.endDate) and date(t1.vl_1_date) != date(orders.date_created) and  date(t1.vl_1_date) < DATE_FORMAT(t2.endDate,'%Y-%m-01')"
     },
     {
         "name": "missing_vl_order",
         "label": "missing vl and vl order",
         "description": " From reporting start-date to a specific month, these are patients on ART, with no Viral Load  and no Viral Load Test Order (Patients whose Viral Load Test Order not placed)",
-        "expression": "timestampdiff(month, arv_start_date, encounter_datetime) >= 6 and (timestampdiff(day,vl_1_date, date(t2.endDate)) > 365 or vl_1_date is null) and (orders.date_created is null or orders.concept_id!=856)"
+        "expression": "timestampdiff(month, t1.arv_start_date, t1.encounter_datetime) >= 6 and (timestampdiff(day,t1.vl_1_date, date(t2.endDate)) > 365 or t1.vl_1_date is null) and (orders.date_created is null or orders.concept_id!=856)"
     },
     {
         "name": "perc_tested_appropriately",

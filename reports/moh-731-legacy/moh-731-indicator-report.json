@@ -31,65 +31,6 @@
     ],
     "indicators": [
       {
-        "label":"currently_in_care_total",
-        "expression":"currently_in_care_total",
-        "sql":"count(distinct if($expression,t1.person_id,null))"
-      },
-      {
-        "label":"currently_in_care_males_lt_one",
-        "expression":"currently_in_care_males_lt_one",
-        "sql":"count(distinct if($expression,t1.person_id,null))",
-        "disaggregation": {
-          "indicator":"currently_in_care_total",
-          "filters": ["male","age_below_1"]
-        }
-      },
-      {
-        "label":"currently_in_care_females_lt_one",
-        "expression":"currently_in_care_females_lt_one",
-        "sql":"count(distinct if($expression,t1.person_id,null))",
-        "disaggregation": {
-          "indicator":"currently_in_care_total",
-          "filters": ["female","age_below_1"]
-        }
-      },
-      {
-        "label":"currently_in_care_males_below_15",
-        "expression":"currently_in_care_males_below_15",
-        "sql":"count(distinct if($expression,t1.person_id,null))",
-        "disaggregation": {
-          "indicator":"currently_in_care_total",
-          "filters": ["male", "age_below_15"]
-        }
-      },
-      {
-        "label":"currently_in_care_females_below_15",
-        "expression":"currently_in_care_females_below_15",
-        "sql":"count(distinct if($expression,t1.person_id,null))",
-        "disaggregation": {
-          "indicator":"currently_in_care_total",
-          "filters": ["female", "age_below_15"]
-        }
-      },
-      {
-        "label":"currently_in_care_males_15_and_older",
-        "expression":"currently_in_care_males_15_and_older",
-        "sql":"count(distinct if($expression,t1.person_id,null))",
-        "disaggregation": {
-          "indicator":"currently_in_care_total",
-          "filters": ["male","age_15_and_older"]
-        }
-      },
-      {
-        "label":"currently_in_care_females_15_and_older",
-        "expression":"currently_in_care_females_15_and_older",
-        "sql":"count(distinct if($expression,t1.person_id,null))",
-        "disaggregation": {
-          "indicator":"currently_in_care_total",
-          "filters": ["female","age_15_and_older"]
-        }
-      },
-      {
         "label":"revisits_on_art_total",
         "expression":"revisits_on_art_total",
         "sql":"count(distinct if($expression,t1.person_id,null))"
@@ -341,6 +282,147 @@
       },
       {
         "label":"location_id",
+        "type":"single",
+        "sql":"t1.location_id"
+      },
+      {
+        "label":"joining_column",
+        "type":"single",
+        "sql":"1"
+      }
+    ]
+  },
+  {
+    "name": "moh-731-active_in_care-data-set",
+    "table": {
+      "schema": "etl",
+      "tableName": "dates",
+      "alias": "t2"
+    },
+    "joins": [
+      {
+        "joinType": "JOIN",
+        "schema": "etl",
+        "tableName": "flat_hiv_summary",
+        "alias": "t1",
+        "indexExpression": "FORCE INDEX (loc_id_enc_date_next_clinic)",
+        "joinExpression": "date(t1.encounter_datetime) <= date(t2.endDate)"
+      },
+      {
+        "joinType": "LEFT OUTER JOIN",
+        "schema": "etl",
+        "tableName": "flat_hiv_summary",
+        "alias": "outreach",
+        "joinExpression": "t1.person_id = outreach.person_id and outreach.encounter_type = 21 and outreach.encounter_datetime > t1.encounter_datetime and date(outreach.encounter_datetime) <= t2.endDate and (date(outreach.next_encounter_datetime_hiv) > t2.endDate or outreach.next_encounter_datetime_hiv is null)"
+      },
+      {
+        "joinType": "LEFT OUTER JOIN",
+        "schema": "etl",
+        "tableName": "flat_hiv_summary",
+        "alias": "transfer",
+        "joinExpression": "t1.person_id = transfer.person_id and transfer.encounter_type = 116 and transfer.encounter_datetime > t1.encounter_datetime and date(transfer.encounter_datetime) <= t2.endDate and (date(transfer.next_encounter_datetime_hiv) > t2.endDate or transfer.next_encounter_datetime_hiv is null)"
+      },
+      {"joinType":"INNER JOIN","schema":"amrs","tableName":"person","alias":"t3","joinExpression":"t1.person_id = t3.person_id"}
+    ],
+    "parameters": [
+      {"name":"startDate", "defaultValue":"2015-10-01"},
+      {"name":"endDate", "defaultValue":"2015-10-31"},
+      {"name":"locations","defaultValue":[]},
+      {"name":"groupByLocation", "defaultValue":[
+        {"label":"location","expression":"t1.location_id"}
+      ]
+      }
+    ],
+    "filters": [
+      {
+        "expression": "t2.endDate >= date(?)",
+        "parameter": "startDate"
+      },
+      {
+        "expression": "t2.endDate <= date(?)",
+        "parameter": "endDate"
+      },
+      {
+        "expression": "t1.location_id in ?",
+        "parameter": "locations"
+      },
+      {
+        "expression": "t1.is_clinical_encounter=1",
+        "processForce": true
+      },
+      {
+        "expression": "(t1.next_clinical_datetime_hiv is null or date(t1.next_clinical_datetime_hiv) > t2.endDate)",
+        "processForce": true
+      }
+    ],
+    "groupClause":[
+      {"parameter":"groupByLocation"},
+      {"parameter":"groupByMonth"}
+    ],
+    "indicators": [
+      {
+        "label":"currently_in_care_total",
+        "expression":"currently_in_care_total",
+        "sql":"count(distinct if($expression,t1.person_id,null))"
+      },
+      {
+        "label":"currently_in_care_males_lt_one",
+        "expression":"currently_in_care_males_lt_one",
+        "sql":"count(distinct if($expression,t1.person_id,null))",
+        "disaggregation": {
+          "indicator":"currently_in_care_total",
+          "filters": ["male","age_below_1"]
+        }
+      },
+      {
+        "label":"currently_in_care_females_lt_one",
+        "expression":"currently_in_care_females_lt_one",
+        "sql":"count(distinct if($expression,t1.person_id,null))",
+        "disaggregation": {
+          "indicator":"currently_in_care_total",
+          "filters": ["female","age_below_1"]
+        }
+      },
+      {
+        "label":"currently_in_care_males_below_15",
+        "expression":"currently_in_care_males_below_15",
+        "sql":"count(distinct if($expression,t1.person_id,null))",
+        "disaggregation": {
+          "indicator":"currently_in_care_total",
+          "filters": ["male", "age_below_15"]
+        }
+      },
+      {
+        "label":"currently_in_care_females_below_15",
+        "expression":"currently_in_care_females_below_15",
+        "sql":"count(distinct if($expression,t1.person_id,null))",
+        "disaggregation": {
+          "indicator":"currently_in_care_total",
+          "filters": ["female", "age_below_15"]
+        }
+      },
+      {
+        "label":"currently_in_care_males_15_and_older",
+        "expression":"currently_in_care_males_15_and_older",
+        "sql":"count(distinct if($expression,t1.person_id,null))",
+        "disaggregation": {
+          "indicator":"currently_in_care_total",
+          "filters": ["male","age_15_and_older"]
+        }
+      },
+      {
+        "label":"currently_in_care_females_15_and_older",
+        "expression":"currently_in_care_females_15_and_older",
+        "sql":"count(distinct if($expression,t1.person_id,null))",
+        "disaggregation": {
+          "indicator":"currently_in_care_total",
+          "filters": ["female","age_15_and_older"]
+        }
+      }
+    ],
+    "supplementColumns":[
+      {
+        "label":"joining_location_id",
         "type":"single",
         "sql":"t1.location_id"
       },
